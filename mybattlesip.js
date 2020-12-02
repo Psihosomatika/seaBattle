@@ -70,9 +70,34 @@ function parseGuess(guess) {
 };
 const controller = {
     guesses: 0,
-    processGuess: function(guess) {
+    processGuess: function(guess)  {
         var location = parseGuess(guess);
         if (location) {
+            this.guesses++;
+            let hit = model.fire(location);
+            if (hit && model.shipsSunk === model.numShips) {
+            view.displayMessage("You sank all my battleships, in " + this.guesses + " guesses");
+            }
         }
     }
 };
+function init() {
+    let fireButton = document.getElementById("fireButton");
+    fireButton.onclick = handleFireButton;
+    let guessInput = document.getElementById("guessInput");
+    guessInput.onkeypress = handleKeyPress;
+};
+function handleFireButton() {
+    const guessInput = document.getElementById("guessInput");
+    const guess = guessInput.value;
+    controller.processGuess(guess);
+    guessInput.value = "";
+};
+function handleKeyPress(e) {
+    var fireButton = document.getElementById("fireButton");
+    if (e.keyCode === 13) {
+        fireButton.click();
+        return false;
+    }
+}
+window.onload = init;
